@@ -9,5 +9,7 @@ import { TaskService } from '../../services/task-service';
 })
 export class TaskSummary {
   private readonly taskService = inject(TaskService);
-  protected readonly totalTasks = this.taskService.getTasksCount();
+  protected readonly taskCount = this.taskService.taskCount;
+  protected readonly activeCount = this.taskService.activeCount;
+  protected readonly completedCount = this.taskService.completedCount;
 }

@@ -1,4 +1,14 @@
 <section>
-  <span> Total Tasks </span>
-  <strong>{{ totalTasks }}</strong>
+  <div>
+    <span> Total Tasks </span>
+    <strong>{{ taskCount() }}</strong>
+  </div>
+  <div>
+    <span> Active Tasks </span>
+    <strong>{{ activeCount() }}</strong>
+  </div>
+  <div>
+    <span> Completed Tasks </span>
+    <strong>{{ completedCount() }}</strong>
+  </div>
 </section>

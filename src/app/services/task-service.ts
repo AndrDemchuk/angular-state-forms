@@ -1,11 +1,11 @@
-import { Injectable } from '@angular/core';
+import { computed, Injectable, signal } from '@angular/core';
 import { Task } from '../models/task';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TaskService {
-  private readonly tasks: Task[] = [
+  private readonly taskState = signal<Task[]>([
     {
       id: 1,
       title: 'Complete Angular Project',
@@ -27,12 +27,24 @@ export class TaskService {
       status: 'completed',
       dueDate: new Date('2026-06-25'),
     },
-  ];
+  ]);
 
-  getTasks(): Task[] {
-    return this.tasks;
-  };
-  getTasksCount(): number {
-    return this.tasks.length;
+  readonly tasks = this.taskState.asReadonly();
+  readonly taskCount = computed(() => this.taskState().length);
+  readonly completedCount = computed(() => this.taskState().filter(task => task.status === 'completed').length);
+  readonly activeCount = computed(() => this.taskState().filter(task => task.status !== 'completed').length);
+
+  toggleTaskCompletion(taskId: number): void {
+    this.taskState.update(value => value.map(item => {
+      if (item.id === taskId) {
+        return {
+          ...item, status: item.status === 'completed' ? 'todo' : 'completed'
+        }
+      } else return item;
+    }))
+  }
+
+  addTask(task: Omit<Task, 'id'>): void {
+    this.taskState.update(tasks => [...tasks, { ...task, id: Date.now() }])
   }
 }
