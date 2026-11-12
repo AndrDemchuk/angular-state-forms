@@ -1,0 +1,180 @@
+/* Mobile-first: base styles target phones, wider screens are added via min-width */
+.form-section {
+  margin-top: 2rem;
+  padding: 1.25rem;
+  border-radius: 1.25rem;
+  background: #ffffff;
+  box-shadow: 0 4px 6px rgba(15, 23, 42, 0.06);
+}
+
+.form-heading {
+  margin-bottom: 1.5rem;
+}
+
+.form-heading h2 {
+  margin: 0 0 0.35rem;
+  font-size: 1.6rem;
+  color: #1e293b;
+}
+
+.form-heading p {
+  margin: 0;
+  color: #64748b;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  min-width: 0;
+}
+
+label span {
+  color: #334155;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+input,
+textarea,
+select {
+  width: 100%;
+  min-height: 44px; /* comfortable tap target */
+  padding: 0.7rem 0.9rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  background: #f8fafc;
+  color: #0f172a;
+  font: inherit;
+  box-sizing: border-box;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #94a3b8;
+}
+
+input:hover,
+textarea:hover,
+select:hover {
+  border-color: #c7d2fe;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: #6366f1;
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.18);
+}
+
+textarea {
+  min-height: 7rem;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+select {
+  cursor: pointer;
+}
+
+/* Status and due date stack on phones, sit side by side on wider screens */
+.form-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.1rem;
+}
+
+button[type='submit'] {
+  width: 100%;
+  min-height: 44px;
+  margin-top: 0.4rem;
+  padding: 0.8rem 1.5rem;
+  border: none;
+  border-radius: 0.75rem;
+  background: #6366f1;
+  color: #ffffff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(99, 102, 241, 0.25);
+  /* Only transform/shadow/colour change on hover, so nothing around it reflows */
+  transition:
+    background-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+/* Skip the hover effect while disabled so the button doesn't look clickable */
+button[type='submit']:hover:not(:disabled) {
+  background: #4f46e5;
+  box-shadow: 0 10px 22px rgba(79, 70, 229, 0.3);
+  transform: translateY(-1px);
+}
+
+button[type='submit']:active {
+  transform: translateY(0);
+}
+
+button[type='submit']:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.18);
+}
+
+.field-error {
+  color: #b91c1c;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+input.ng-invalid.ng-touched,
+textarea.ng-invalid.ng-touched,
+select.ng-invalid.ng-touched {
+  border-color: #ef4444;
+  background: #fef2f2;
+}
+
+button:disabled {
+  background: #a5b4fc;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+@media (min-width: 600px) {
+  .form-section {
+    padding: 2rem;
+  }
+
+  .form-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  button[type='submit'] {
+    width: auto;
+    align-self: flex-start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  input,
+  textarea,
+  select,
+  button[type='submit'] {
+    transition: none;
+  }
+
+  button[type='submit']:hover {
+    transform: none;
+  }
+}

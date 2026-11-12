@@ -1,17 +1,18 @@
+/* Mobile-first: base styles target phones, wider screens are added via min-width */
 .task-section {
   margin-top: 2rem;
-  padding: 2rem;
+  padding: 1.25rem;
   border-radius: 1.25rem;
   background: #ffffff;
-  box-shadow: 0px 4px 6px rgba(15, 23, 42, 0.06);
+  box-shadow: 0 4px 6px rgba(15, 23, 42, 0.06);
 }
 
 .section-heading {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 1rem;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
 }
 
 .section-heading h2 {
@@ -32,14 +33,20 @@
 
 .task-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1.25rem;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
 }
 
+/* Each status sets its own accent colours, used by the top bar and the badge */
 .task-card {
+  --accent: #0ea5e9;
+  --badge-bg: #e0f2fe;
+  --badge-text: #0369a1;
+
   position: relative;
   display: flex;
   flex-direction: column;
+  min-width: 0;
   min-height: 230px;
   padding: 1.4rem;
   overflow: hidden;
@@ -53,6 +60,18 @@
     border-color 0.2s ease;
 }
 
+.task-card[data-status='in-progress'] {
+  --accent: #f59e0b;
+  --badge-bg: #fef3c7;
+  --badge-text: #b45309;
+}
+
+.task-card[data-status='completed'] {
+  --accent: #22c55e;
+  --badge-bg: #dcfce7;
+  --badge-text: #15803d;
+}
+
 .task-card::before {
   content: '';
   position: absolute;
@@ -60,13 +79,7 @@
   left: 0;
   width: 100%;
   height: 4px;
-  background: #6366f1;
-}
-
-.task-card:hover {
-  transform: translateY(-4px);
-  border-color: #c7d2fe;
-  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.1);
+  background: var(--accent);
 }
 
 .task-card h3 {
@@ -81,43 +94,167 @@
   line-height: 1.55;
 }
 
-.task-card small {
-  margin-top: auto;
-  padding-top: 1.25rem;
-  color: #475569;
-  font-size: 0.85rem;
-  font-weight: 600;
+.task-card.is-completed h3 {
+  color: #64748b;
+  text-decoration: line-through;
 }
 
 .task-status {
   align-self: flex-start;
   padding: 0.35rem 0.7rem;
   border-radius: 999px;
-  background: #eef2ff;
-  color: #4338ca;
+  background: var(--badge-bg);
+  color: var(--badge-text);
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.02rem;
   text-transform: capitalize;
 }
 
-@media (max-width: 900px) {
-  .task-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+/* Due date and toggle button sit at the bottom; they wrap onto two lines if space is tight */
+.task-card-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: auto;
+  padding-top: 1.25rem;
+}
+
+.task-due {
+  color: #475569;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.task-toggle {
+  min-height: 44px; /* comfortable tap target */
+  padding: 0.6rem 1rem;
+  border: 1px solid #c7d2fe;
+  border-radius: 0.75rem;
+  background: #eef2ff;
+  color: #4338ca;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  /* Only colours change on hover, so the card keeps its size */
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.task-toggle:hover {
+  border-color: #a5b4fc;
+  background: #e0e7ff;
+}
+
+.task-toggle:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.25);
+}
+
+/* Request error banner (e.g. a failed delete): red alert with an icon badge on the left */
+.error-message {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin: 0 0 1.25rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid #fecaca;
+  border-left: 4px solid #ef4444;
+  border-radius: 0.75rem;
+  background: #fef2f2;
+  color: #991b1b;
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.45;
+  animation: error-message-in 0.25s ease-out;
+}
+
+/* Round "!" badge drawn in CSS, so no icon asset is needed */
+.error-message::before {
+  content: '!';
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.4rem;
+  height: 1.4rem;
+  border-radius: 50%;
+  background: #ef4444;
+  color: #ffffff;
+  font-size: 0.85rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+/* Fade/slide in; transform and opacity only, so it never reflows the cards */
+@keyframes error-message-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-@media (max-width: 600px) {
+.task-empty {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 2rem 1rem;
+  border: 2px dashed #e2e8f0;
+  border-radius: 1rem;
+  color: #64748b;
+  text-align: center;
+}
+
+/* Lift effect only on devices that can really hover; transform does not reflow the grid */
+@media (hover: hover) {
+  .task-card:hover {
+    transform: translateY(-4px);
+    border-color: #c7d2fe;
+    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.1);
+  }
+}
+
+@media (min-width: 600px) {
   .task-section {
-    padding: 1.25rem;
+    padding: 2rem;
   }
 
   .section-heading {
-    flex-direction: column;
-    align-items: flex-start;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
   }
 
   .task-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.25rem;
+  }
+}
+
+@media (min-width: 900px) {
+  .task-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .task-card,
+  .task-toggle {
+    transition: none;
+  }
+
+  .error-message {
+    animation: none;
+  }
+
+  .task-card:hover {
+    transform: none;
   }
 }

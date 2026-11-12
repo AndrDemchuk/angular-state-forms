@@ -1,38 +1,75 @@
-import { Injectable } from '@angular/core';
+import { computed, Injectable, signal, inject } from '@angular/core';
 import { Task } from '../models/task';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TaskService {
-  private readonly tasks: Task[] = [
-    {
-      id: 1,
-      title: 'Complete Angular Project',
-      description: 'Finish the Angular project for the client by the end of the week.',
-      status: 'in-progress',
-      dueDate: new Date('2026-06-30'),
-    },
-    {
-      id: 2,
-      title: 'Prepare Presentation',
-      description: 'Create slides for the upcoming team meeting.',
-      status: 'todo',
-      dueDate: new Date('2026-07-05'),
-    },
-    {
-      id: 3,
-      title: 'Submit Report',
-      description: 'Submit the monthly report to the manager.',
-      status: 'completed',
-      dueDate: new Date('2026-06-25'),
-    },
-  ];
+  private readonly taskState = signal<Task[]>([]);
 
-  getTasks(): Task[] {
-    return this.tasks;
-  };
-  getTasksCount(): number {
-    return this.tasks.length;
+  private readonly http = inject(HttpClient);
+  private readonly apiUrl = 'http://localhost:3000/tasks';
+  readonly errorMessage = signal('');
+
+  readonly tasks = this.taskState.asReadonly();
+  readonly taskCount = computed(() => this.taskState().length);
+  readonly completedCount = computed(() => this.taskState().filter(task => task.status === 'completed').length);
+  readonly activeCount = computed(() => this.taskState().filter(task => task.status !== 'completed').length);
+
+  constructor() {
+    this.loadTasks();
   }
+
+  loadTasks(): void {
+    this.http.get<Task[]>(this.apiUrl).subscribe(tasks => this.taskState.set(tasks));
+  }
+
+  deleteTask(taskId: number): void {
+    this.errorMessage.set('');
+    
+    this.http.delete(`${this.apiUrl}/${taskId}`).subscribe({
+      next: () => {
+        this.taskState.update(tasks => tasks.filter(task => task.id !== taskId));
+      },
+      error: (error) => {
+        this.errorMessage.set('Unable to delete task');
+      }
+    });
+  }
+
+  addTask(task: Omit<Task, 'id'>): void {
+    this.http.post<Task>(this.apiUrl, task).subscribe((createdTask) => {
+      this.taskState.update(tasks => [
+        ...tasks, createdTask
+      ]);
+    });
+  }
+
+  toggleTaskCompletion(taskId: number): void {
+    const currentTask = this.taskState().find(
+      task => task.id === taskId
+    );
+
+    if (!currentTask) {
+      return;
+    }
+
+    const newStatus = currentTask.status === 'completed' ? 'todo' : 'completed';
+
+    this.http.patch<Task>(`${this.apiUrl}/${taskId}`, { status: newStatus }).subscribe(updatedTask => {
+      this.taskState.update(tasks => tasks.map(task => task.id === taskId ? updatedTask : task));
+    });
+  }
+
+  /*   addTask(task: Omit<Task, 'id'>): void {
+      this.taskState.update(tasks => [...tasks, { ...task, id: Date.now() }])
+    }
+   */
+  getTaskById(taskId: number): Task | undefined {
+    return this.taskState().find(task => task.id === taskId);
+  }
+
+  readonly canCreateTask = computed(() => this.taskState().length < 5);
+
 }

@@ -1,0 +1,26 @@
+{
+  "tasks": [
+    {
+      "id": "2",
+      "title": "Prepare Presentation",
+      "description": "Create slides for the upcoming team meeting.",
+      "status": "todo",
+      "dueDate": "2026-07-05"
+    },
+    {
+      "id": "3",
+      "title": "Submit Report",
+      "description": "Submit the monthly report to the manager.",
+      "status": "completed",
+      "dueDate": "2026-06-25"
+    },
+    {
+      "title": "test task",
+      "description": "testin test task",
+      "status": "completed",
+      "dueDate": "2026-11-26",
+      "id": "ZDy4cWAwi5E"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}
