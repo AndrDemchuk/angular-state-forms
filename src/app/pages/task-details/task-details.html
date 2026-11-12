@@ -1,0 +1,14 @@
+<section class="task-details" [class.is-missing]="!task" [attr.data-status]="task?.status">
+  @if (task) {
+    <p class="task-status">{{ task.status }}</p>
+    <h2 class="task-title">{{ task.title }}</h2>
+    <p class="task-description">{{ task.description }}</p>
+    <div class="task-meta">
+      <span>Due date</span>
+      <strong>{{ task.dueDate }}</strong>
+    </div>
+  } @else {
+    <h2 class="task-title">Task not found</h2>
+    <p class="task-description">The requested task could not be found</p>
+  }
+</section>

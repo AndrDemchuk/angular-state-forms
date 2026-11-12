@@ -1,14 +1,14 @@
-<section>
-  <div>
-    <span> Total Tasks </span>
-    <strong>{{ taskCount() }}</strong>
+<section class="task-summary" aria-label="Task summary">
+  <div class="summary-card">
+    <span class="summary-label">Total Tasks</span>
+    <strong class="summary-value">{{ taskCount() }}</strong>
   </div>
-  <div>
-    <span> Active Tasks </span>
-    <strong>{{ activeCount() }}</strong>
+  <div class="summary-card summary-card--active">
+    <span class="summary-label">Active Tasks</span>
+    <strong class="summary-value">{{ activeCount() }}</strong>
   </div>
-  <div>
-    <span> Completed Tasks </span>
-    <strong>{{ completedCount() }}</strong>
+  <div class="summary-card summary-card--completed">
+    <span class="summary-label">Completed Tasks</span>
+    <strong class="summary-value">{{ completedCount() }}</strong>
   </div>
 </section>

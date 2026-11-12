@@ -1,0 +1,139 @@
+/* Mobile-first: base styles target phones, wider screens are added via min-width */
+
+/* Each status sets its own accent colours, same palette as the task cards */
+.task-details {
+  --accent: #0ea5e9;
+  --badge-bg: #e0f2fe;
+  --badge-text: #0369a1;
+
+  position: relative;
+  max-width: 48rem;
+  margin: 2rem auto 0;
+  padding: 1.75rem 1.25rem 1.5rem;
+  overflow: hidden; /* clips the accent bar to the rounded corners */
+  border: 1px solid #e2e8f0;
+  border-radius: 1.25rem;
+  background: #ffffff;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+}
+
+.task-details[data-status='in-progress'] {
+  --accent: #f59e0b;
+  --badge-bg: #fef3c7;
+  --badge-text: #b45309;
+}
+
+.task-details[data-status='completed'] {
+  --accent: #22c55e;
+  --badge-bg: #dcfce7;
+  --badge-text: #15803d;
+}
+
+/* Accent bar along the top edge */
+.task-details::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background: var(--accent);
+}
+
+.task-status {
+  display: inline-block;
+  margin: 0;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  background: var(--badge-bg);
+  color: var(--badge-text);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.02rem;
+  text-transform: capitalize;
+}
+
+.task-title {
+  margin: 1rem 0 0.75rem;
+  color: #0f172a;
+  font-size: clamp(1.5rem, 5vw, 2.1rem);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.task-details[data-status='completed'] .task-title {
+  color: #64748b;
+  text-decoration: line-through;
+}
+
+.task-description {
+  margin: 0;
+  color: #475569;
+  font-size: 1.05rem;
+  line-height: 1.65;
+}
+
+/* Due date block: label above value on phones */
+.task-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-top: 1.75rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.9rem;
+  background: #f8fafc;
+}
+
+.task-meta span {
+  color: #64748b;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.task-meta strong {
+  min-width: 0;
+  color: #1e293b;
+  font-size: 1rem;
+  overflow-wrap: anywhere; /* the raw Date string is long */
+}
+
+/* "Task not found" state: neutral card with a dashed outline, no accent bar */
+.task-details.is-missing {
+  border: 2px dashed #e2e8f0;
+  box-shadow: none;
+  text-align: center;
+}
+
+.task-details.is-missing::before {
+  content: none;
+}
+
+.task-details.is-missing .task-title {
+  margin-top: 0;
+  color: #1e293b;
+}
+
+.task-details.is-missing .task-description {
+  color: #64748b;
+}
+
+@media (min-width: 600px) {
+  .task-details {
+    padding: 2.5rem 2.25rem 2.25rem;
+  }
+
+  /* Wider screens: label and value sit on one line */
+  .task-meta {
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .task-meta strong {
+    text-align: right;
+  }
+}
